@@ -58,19 +58,11 @@ jobs:
           docker exec -u root -t lama-testing-image chown -R opam:opam /home/opam/lama
           docker exec -u opam -w /home/opam/lama -t lama-testing-image sh -c 'eval $(opam config env) && make'
           echo "Regression: All checks have successfully passed"
-      # - name: Check Deadline
-      #   run: |
-      #     deadline=2025-03-04T23:59
-      #     if [[ $(date +'%Y-%m-%d') > $deadline ]];
-      #     then
-      #         echo "FIASCO: The deadline has expired"
-      #         exit 1
-      #     fi
       - name: Prepare results
         run: |
-          login=${{ github.event.pull_request.user.login }}
-          echo "$login" > gitid.txt
-          echo ${{ github.base_ref }} > base.txt
+          echo "${{ github.event.pull_request.user.login }}" > gitid.txt
+          echo "${{ github.base_ref }}" > base.txt
+          echo "${{ github.event.pull_request.number }}" > pr_number.txt
           branch=${{ github.base_ref }}
           if [[ ${branch:1:1} -eq 0 ]]
           then
@@ -84,6 +76,7 @@ jobs:
           name: share_info
           path: |
             gitid.txt
+            pr_number.txt
             base.txt
             assignment_number.txt
             university.txt
